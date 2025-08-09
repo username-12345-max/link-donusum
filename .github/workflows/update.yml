@@ -30,3 +30,12 @@ jobs:
     git add -A
     git commit -m "Otomatik güncelleme: $(date)" || echo "Commit atlanıyor"
     git push
+- name: Push changes
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    git config --global user.name 'github-actions'
+    git config --global user.email 'github-actions@github.com'
+    git add mehmet_guncel_modified.m3u
+    git commit -m 'Update modified M3U file'
+    git push origin main
