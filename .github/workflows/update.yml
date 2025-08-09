@@ -1,9 +1,10 @@
 name: Günlük M3U Güncelleme
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '30 3 * * *' # Her gün 03:30 UTC
-workflow_dispatch:
+
 
 jobs:
   update-m3u:
