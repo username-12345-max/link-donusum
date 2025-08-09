@@ -1,0 +1,32 @@
+name: Günlük M3U Güncelleme
+
+on:
+  schedule:
+    - cron: '30 3 * * *'  # Her gün 03:30 UTC
+  workflow_dispatch:
+
+jobs:
+  update-m3u:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu klonla
+        uses: actions/checkout@v3
+
+      - name: Node.js kur
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Bağımlılıkları yükle
+        run: npm install axios
+
+      - name: Dosyayı indir ve dönüştür
+        run: node update.js
+
+      - name: Değişiklikleri commit et
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add mehmet_guncel_modified.m3u || echo "Değişiklik yok"
+          git commit -m "Otomatik güncelleme: $(date)" || echo "Commit atlanıyor"
+          git push
