@@ -2,7 +2,7 @@ name: Günlük M3U Güncelleme
 
 on:
   schedule:
-    - cron: '30 3 * * *'  # Her gün 03:30 UTC
+    - cron: '30 3 * * *' # Her gün 03:30 UTC
   workflow_dispatch:
 
 jobs:
@@ -18,24 +18,20 @@ jobs:
           node-version: '18'
 
       - name: Bağımlılıkları yükle
-        run: npm install axios
+        run: npm install
 
       - name: Dosyayı indir ve dönüştür
         run: node update.js
 
-      - name: Değişiklikleri commit et
-  run: |
-    git config --global user.name "GitHub Action"
-    git config --global user.email "action@github.com"
-    git add -A
-    git commit -m "Otomatik güncelleme: $(date)" || echo "Commit atlanıyor"
-    git push
-- name: Push changes
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  run: |
-    git config --global user.name 'github-actions'
-    git config --global user.email 'github-actions@github.com'
-    git add mehmet_guncel_modified.m3u
-    git commit -m 'Update modified M3U file'
-    git push origin main
+      - name: Değişiklikleri commit ve push et
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          if [ -f mehmet_guncel_modified.m3u ]; then
+            git add mehmet_guncel_modified.m3u
+            git commit -m "Güncellenmiş M3U dosyası"
+            git push origin main
+          else
+            echo "Dosya bulunamadı, push yapılmadı."
