@@ -30,3 +30,10 @@ jobs:
           git add mehmet_guncel_modified.m3u || echo "Değişiklik yok"
           git commit -m "Otomatik güncelleme: $(date)" || echo "Commit atlanıyor"
           git push
+- name: Değişiklikleri commit et
+  run: |
+    git config --global user.name "GitHub Action"
+    git config --global user.email "action@github.com"
+    git add -A
+    git commit -m "Otomatik güncelleme: $(date)" || echo "Commit atlanıyor"
+    git push
