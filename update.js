@@ -15,11 +15,9 @@ function guncelle() {
   });
 }
 
-// Her gün saat 06:30'da çalıştır
 cron.schedule('30 6 * * *', () => {
   console.log('⏰ Otomatik güncelleme başlatıldı...');
   guncelle();
 });
 
-// Manuel çalıştırma için
 guncelle();
