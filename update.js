@@ -15,7 +15,7 @@ function guncelle() {
   });
 }
 
-cron.schedule('30 6 * * *', () => {
+cron.schedule('30 3 * * *', () => {
   console.log('⏰ Otomatik güncelleme başlatıldı...');
   guncelle();
 });
