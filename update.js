@@ -4,26 +4,22 @@ const cron = require('node-cron');
 
 const sourceUrl = 'https://raw.githubusercontent.com/atakan1983/tvepic/main/mehmet_guncel.m3u';
 
-function updatePlaylist() {
+function guncelle() {
   axios.get(sourceUrl).then(response => {
     let content = response.data;
-
-    // HTTPS → HTTP dönüşümü
     content = content.replace(/https:\/\/ottcdn\.kablowebtv\.net/g, 'http://ottcdn.kablowebtv.net');
-
-    // Dosyayı kaydet
     fs.writeFileSync('mehmet_guncel_modified.m3u', content);
-    console.log(`[${new Date().toLocaleString()}] Dosya başarıyla dönüştürüldü!`);
+    console.log('✅ Dosya başarıyla dönüştürüldü!');
   }).catch(error => {
-    console.error(`[${new Date().toLocaleString()}] İndirme hatası:`, error.message);
+    console.error('❌ İndirme hatası:', error);
   });
 }
 
-// Her gün saat 06:00'da çalıştır
-cron.schedule('0 6 * * *', () => {
-  console.log('Otomatik güncelleme başlatılıyor...');
-  updatePlaylist();
+// Her gün saat 06:30'da çalıştır
+cron.schedule('30 6 * * *', () => {
+  console.log('⏰ Otomatik güncelleme başlatıldı...');
+  guncelle();
 });
 
 // Manuel çalıştırma için
-updatePlaylist();
+guncelle();
