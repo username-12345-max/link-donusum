@@ -23,11 +23,14 @@ jobs:
 
       - name: Scripti çalıştır
         run: node update.js
-
       - name: Değişiklikleri commit et ve pushla
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/username-12345-max/link-donusum.git
           git add mehmet_guncel_modified.m3u
           git commit -m "🔄 Otomatik güncelleme: $(date +'%Y-%m-%d %H:%M')"
           git push
+     
