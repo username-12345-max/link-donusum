@@ -6,7 +6,7 @@ const sourceUrl = 'https://raw.githubusercontent.com/atakan1983/tvepic/main/mehm
 axios.get(sourceUrl).then(response => {
   let content = response.data;
 
-  // HTTPS → HTTP dönüşümü
+  // HTTPS → HTTP dönüşümü (düzeltilmiş regex)
   content = content.replace(/https:\/\/ottcdn\.kablowebtv\.net/g, 'http://ottcdn.kablowebtv.net');
 
   // Dosyayı kaydet
