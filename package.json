@@ -1,0 +1,14 @@
+{
+  "name": "link-donusum",
+  "version": "1.0.0",
+  "description": "M3U dosyası dönüştürme ve otomatik güncelleme sistemi",
+  "main": "update.js",
+  "scripts": {
+    "start": "node update.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "author": "username-12345-max",
+  "license": "MIT"
+}
