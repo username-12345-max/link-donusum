@@ -23,6 +23,7 @@ jobs:
 
       - name: Scripti çalıştır
         run: node update.js
+
       - name: Değişiklikleri commit et ve pushla
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -30,6 +31,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add mehmet_guncel_modified.m3u
-          git commit -m "🔄 Otomatik güncelleme: $(date +'%Y-%m-%d %H:%M')"
+          git commit -m "🔄 Otomatik güncelleme: $(date +'%Y-%m-%d %H:%M')" || echo "Değişiklik yok, commit atlanıyor"
           git push
-     
