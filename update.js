@@ -20,4 +20,4 @@ cron.schedule('30 3 * * *', () => {
   guncelle();
 });
 
-guncelle();
+
