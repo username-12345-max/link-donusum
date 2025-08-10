@@ -18,16 +18,22 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Axios'u yükle
-        run: npm install axios
+      - name: Paketleri yükle
+        run: |
+          npm init -y
+          npm install axios
 
       - name: update.js dosyasını çalıştır
-        run: node update.js
+        run: |
+          set -e
+          node update.js
 
-      - name: Push changes
+      - name: Değişiklik varsa push et
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add mehmet_guncel_modified.m3u
-          git commit -m "Update modified M3U file" || echo "Commit atlanıyor"
-          git push origin main
+          git diff --cached --quiet || (
+            git commit -m "Update modified M3U file"
+            git push origin main
+          )
