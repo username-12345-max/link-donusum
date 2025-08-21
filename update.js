@@ -3,7 +3,7 @@ const https = require('https');
 
 const kaynaklar = [
   {
-    url: 'https://raw.githubusercontent.com/atakan1983/tvepic/main/mehmet_guncel.m3u',
+    url: 'https://kablo-m3u.atakan-19833.workers.dev/?file=mehmet_guncel.m3u'
     hedef: 'mehmet_guncel_modified.m3u'
   },
   {
