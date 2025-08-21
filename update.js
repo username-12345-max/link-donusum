@@ -22,25 +22,12 @@ async function indirVeKaydet(url, hedefDosya) {
     console.log(`✅ Dosya oluşturuldu: ${hedefDosya}`);
   } catch (error) {
     console.error(`❌ Hata oluştu: ${error.message}`);
-    process.exit(1); // GitHub Actions'da başarısız işaretlemek için
+    process.exit(1);
   }
 }
 
-// Kaynaklar
-const kaynaklar = [
-  {
-    url: 'https://kablo-m3u.atakan-19833.workers.dev/?file=mehmet_guncel.m3u',
-    hedef: 'mehmet_guncel_modified.m3u'
-  },
-  {
-    url: 'https://kablo-m3u.atakan-19833.workers.dev/?file=vodden.m3u',
-    hedef: 'vodden_modified.m3u'
-  }
-];
-
-// Hepsini sırayla indir
-(async () => {
-  for (const kaynak of kaynaklar) {
-    await indirVeKaydet(kaynak.url, kaynak.hedef);
-  }
-})();
+// Sadece tek kaynak
+indirVeKaydet(
+  'https://kablo-m3u.atakan-19833.workers.dev/?file=mehmet_guncel.m3u',
+  'mehmet_guncel_modified.m3u'
+);
