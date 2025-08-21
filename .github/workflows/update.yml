@@ -18,8 +18,8 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Gerekli paketleri yükle
-        run: npm install axios
+      - name: Tüm bağımlılıkları yükle
+        run: npm install
 
       - name: Scripti çalıştır
         run: node update.js
