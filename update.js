@@ -1,49 +1,46 @@
+const axios = require('axios');
 const fs = require('fs');
-const https = require('https');
 
+// Dönüştürme fonksiyonu: https → http
+function donusturIcerik(icerik) {
+  if (typeof icerik !== 'string') throw new Error("İçerik string değil");
+  return icerik.replace(/https:\/\/ottcdn\.kablowebtv\.net/g, 'http://ottcdn.kablowebtv.net');
+}
+
+// Dosya indirme ve kaydetme işlemi
+async function indirVeKaydet(url, hedefDosya) {
+  try {
+    console.log(`📥 URL'den veri alınıyor: ${url}`);
+    const response = await axios.get(url);
+
+    if (!response.data || typeof response.data !== 'string') {
+      throw new Error("Boş veya geçersiz içerik alındı");
+    }
+
+    const donusturulmus = donusturIcerik(response.data);
+    fs.writeFileSync(hedefDosya, donusturulmus, 'utf8');
+    console.log(`✅ Dosya oluşturuldu: ${hedefDosya}`);
+  } catch (error) {
+    console.error(`❌ Hata oluştu: ${error.message}`);
+    process.exit(1); // GitHub Actions'da başarısız işaretlemek için
+  }
+}
+
+// Kaynaklar
 const kaynaklar = [
   {
-    url: 'https://kablo-m3u.atakan-19833.workers.dev/?file=mehmet_guncel.m3u'
+    url: 'https://kablo-m3u.atakan-19833.workers.dev/?file=mehmet_guncel.m3u',
     hedef: 'mehmet_guncel_modified.m3u'
   },
   {
-    url: 'https://raw.githubusercontent.com/atakan1983/vodden/main/vodden.m3u',
+    url: 'https://kablo-m3u.atakan-19833.workers.dev/?file=vodden.m3u',
     hedef: 'vodden_modified.m3u'
   }
 ];
 
-function donusturIcerik(icerik) {
-  return icerik
-    .split('\n')
-    .map(line => {
-      if (line.includes('https://ottcdn.kablowebtv.net')) {
-        try {
-          const url = new URL(line.trim());
-          const wmsAuth = url.searchParams.get('wmsAuthSign');
-          url.protocol = 'http:';
-          const yeniURL = wmsAuth
-            ? `${url.origin}${url.pathname}?wmsAuthSign=${wmsAuth}`
-            : `${url.origin}${url.pathname}`;
-          return yeniURL;
-        } catch {
-          return line;
-        }
-      }
-      return line;
-    })
-    .join('\n');
-}
-
-kaynaklar.forEach(({ url, hedef }) => {
-  https.get(url, res => {
-    let veri = '';
-    res.on('data', chunk => veri += chunk);
-    res.on('end', () => {
-      const donusturulmus = donusturIcerik(veri);
-      fs.writeFileSync(hedef, donusturulmus);
-      console.log(`${hedef} başarıyla oluşturuldu.`);
-    });
-  }).on('error', err => {
-    console.error(`Hata oluştu: ${err.message}`);
-  });
-});
+// Hepsini sırayla indir
+(async () => {
+  for (const kaynak of kaynaklar) {
+    await indirVeKaydet(kaynak.url, kaynak.hedef);
+  }
+})();
