@@ -1,11 +1,18 @@
 const axios = require('axios');
 const fs = require('fs');
 
-// Dönüştürme fonksiyonu: https → http
 function donusturIcerik(icerik) {
   if (typeof icerik !== 'string') throw new Error("İçerik string değil");
-  return icerik.replace(/https:\/\/ottcdn\.kablowebtv\.net/g, 'http://ottcdn.kablowebtv.net');
+
+  // https → http dönüşümü
+  let sonuc = icerik.replace(/https:\/\/ottcdn\.kablowebtv\.net/g, 'http://ottcdn.kablowebtv.net');
+
+  // İlk satırı SS IPTV için düzelt
+  sonuc = sonuc.replace(/^#EXTM3U.*$/m, '#EXTM3U x-tvg-url="https://kablo-m3u.atakan-19833.workers.dev/?file=kabloepg.xml"');
+
+  return sonuc;
 }
+
 
 // Dosya indirme ve kaydetme işlemi
 async function indirVeKaydet(url, hedefDosya) {
