@@ -1,44 +1,46 @@
 const axios = require('axios');
 const fs = require('fs');
 
-function donusturIcerik(icerik) {
+// İçeriği dönüştür: https → http, EPG başlığı isteğe bağlı
+function donusturIcerik(icerik, epgGerekli = false) {
   if (typeof icerik !== 'string') throw new Error("İçerik string değil");
 
-  // https → http dönüşümü
   let sonuc = icerik.replace(/https:\/\/ottcdn\.kablowebtv\.net/g, 'http://ottcdn.kablowebtv.net');
 
-  // İlk satırı SS IPTV için düzelt
-  sonuc = sonuc.replace(/^#EXTM3U.*$/m, '#EXTM3U x-tvg-url="https://kablo-m3u.atakan-19833.workers.dev/?file=kabloepg.xml"');
+  if (epgGerekli) {
+    sonuc = sonuc.replace(/^#EXTM3U.*$/m, '#EXTM3U x-tvg-url="https://kablo-m3u.atakan-19833.workers.dev/?file=kabloepg.xml"');
+  }
 
   return sonuc;
 }
 
-
-// Dosya indirme ve kaydetme işlemi
-async function indirVeKaydet(url, hedefDosya) {
+// Dosya indir ve kaydet
+async function indirVeKaydet(url, hedefDosya, epgGerekli = false) {
   try {
-    console.log(`📥 URL'den veri alınıyor: ${url}`);
+    console.log(`📥 Veri alınıyor: ${url}`);
     const response = await axios.get(url);
     if (!response.data || typeof response.data !== 'string') {
       throw new Error("Boş veya geçersiz içerik alındı");
     }
-    const donusturulmus = donusturIcerik(response.data);
+    const donusturulmus = donusturIcerik(response.data, epgGerekli);
     fs.writeFileSync(hedefDosya, donusturulmus, 'utf8');
     console.log(`✅ Dosya oluşturuldu: ${hedefDosya}`);
   } catch (error) {
-    console.error(`❌ Hata oluştu: ${error.message}`);
+    console.error(`❌ Hata: ${error.message}`);
     process.exit(1);
   }
 }
 
-// Mehmet Güncel kaynağı
+// Mehmet Güncel (EPG gerekli)
 indirVeKaydet(
   'https://kablo-m3u.atakan-19833.workers.dev/?file=mehmet_guncel.m3u',
-  'mehmet_guncel_modified.m3u'
+  'mehmet_guncel_modified.m3u',
+  true
 );
 
-// Vodden kaynağı
+// Vodden (EPG gereksiz)
 indirVeKaydet(
   'https://kablo-vod.atakan-19833.workers.dev/?file=vodden.m3u',
-  'vodden_modified.m3u'
+  'vodden_modified.m3u',
+  false
 );
